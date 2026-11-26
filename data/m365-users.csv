@@ -1,0 +1,6 @@
+FirstName,LastName,Department,JobTitle,Manager
+Katrin,Hoffmann,Management,Geschäftsführerin,
+Anna,Schmidt,Sales,Vertriebsleiterin,katrin.hoffmann
+Jürgen,Müller,Sales,Account Manager,anna.schmidt
+Sabine,Weiß,Accounting,Buchhalterin,katrin.hoffmann
+Marek,Nowak,Warehouse,Lagerleiter,katrin.hoffmann
