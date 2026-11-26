@@ -1,17 +1,18 @@
-# 04 – Microsoft 365 & Entra ID Administration
+<p align="center"><img src="assets/banner.svg" alt="Microsoft 365 &amp; Entra ID" width="100%"></p>
 
-![CI](https://github.com/BigDougCed/04-m365-entra-id/actions/workflows/ci.yml/badge.svg)
+<p align="center"><a href="https://github.com/BigDougCed/04-m365-entra-id/actions/workflows/ci.yml"><img src="https://github.com/BigDougCed/04-m365-entra-id/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <img src="https://img.shields.io/badge/Microsoft_365-D83B01?style=flat-square&logo=microsoft&logoColor=white" alt="Microsoft 365"> <img src="https://img.shields.io/badge/Entra_ID-0078D4?style=flat-square&logo=microsoftazure&logoColor=white" alt="Entra ID"> <img src="https://img.shields.io/badge/Exchange_Online-0078D4?style=flat-square&logo=microsoftoutlook&logoColor=white" alt="Exchange Online"> <img src="https://img.shields.io/badge/Microsoft_Graph-5E5E5E?style=flat-square&logo=microsoft&logoColor=white" alt="Microsoft Graph"> <img src="https://img.shields.io/badge/PowerShell-5391FE?style=flat-square&logo=powershell&logoColor=white" alt="PowerShell"></p>
 
-> 🇩🇪 **Kurzfassung:** Administration eines Microsoft-365-Tenants für die fiktive *NordLicht Handel GmbH*: Benutzer- und Lizenzverwaltung (gruppenbasiert), **MFA und Conditional Access** (inkl. Notfallkonten und Report-only-Test), Exchange Online (freigegebene Postfächer, Verteiler, Berechtigungen) sowie Onboarding/Offboarding per **Microsoft Graph PowerShell**. Dazu ein MFA-Registrierungsbericht für den Service Desk.
+> [!NOTE]
+> **Kurzfassung (DE):** Administration eines Microsoft-365-Tenants für die fiktive *NordLicht Handel GmbH*: Benutzer- und Lizenzverwaltung (gruppenbasiert), **MFA und Conditional Access** (inkl. Notfallkonten und Report-only-Test), Exchange Online (freigegebene Postfächer, Verteiler, Berechtigungen) sowie Onboarding/Offboarding per **Microsoft Graph PowerShell**. Dazu ein MFA-Registrierungsbericht für den Service Desk.
 
-## 🎯 Scenario
+## Scenario
 NordLicht moves e-mail and files to Microsoft 365. IT has to:
 1. Create users and assign licences automatically (no manual licence clicking)
 2. Enforce MFA for everyone and block old, insecure sign-in protocols
 3. Set up shared mailboxes for `info@` and `buchhaltung@`
 4. Offboard leavers safely: block sign-in, revoke sessions, keep the mailbox for the team
 
-## 🏗️ Tenant design
+## Tenant design
 | Item | Value |
 |---|---|
 | Tenant | Microsoft 365 Business Premium trial (25 licences, includes Entra ID P1 + Intune) |
@@ -20,7 +21,7 @@ NordLicht moves e-mail and files to Microsoft 365. IT has to:
 | Admin model | Daily work with a normal account; admin roles only on separate `adm-` accounts; 2 break-glass accounts excluded from CA |
 | Usage location | `DE` (required before a licence can be assigned) |
 
-## 📚 Guides
+## Guides
 | # | Topic | Guide |
 |---|---|---|
 | 1 | Tenant setup, admin accounts, break-glass | [docs/01-tenant-setup.md](docs/01-tenant-setup.md) |
@@ -28,7 +29,7 @@ NordLicht moves e-mail and files to Microsoft 365. IT has to:
 | 3 | MFA and Conditional Access baseline | [docs/03-mfa-conditional-access.md](docs/03-mfa-conditional-access.md) |
 | 4 | Exchange Online: shared mailboxes, groups, permissions | [docs/04-exchange-online.md](docs/04-exchange-online.md) |
 
-## 🧩 Scripts (Microsoft Graph PowerShell SDK)
+## Scripts (Microsoft Graph PowerShell SDK)
 | Script | What it does |
 |---|---|
 | [`New-M365User.ps1`](scripts/New-M365User.ps1) | Creates cloud users from CSV, sets usage location, adds them to the licence group and department group, temporary password |
@@ -43,7 +44,7 @@ Install-Module ExchangeOnlineManagement -Scope CurrentUser
 .\scripts\Get-M365MfaReport.ps1
 ```
 
-## 🔐 Conditional Access baseline
+## Conditional Access baseline
 | Policy | Users | Condition | Control | Start in |
 |---|---|---|---|---|
 | `CA001-AllUsers-RequireMFA` | All (excl. break-glass) | All cloud apps | Require MFA | Report-only → On |
@@ -52,7 +53,7 @@ Install-Module ExchangeOnlineManagement -Scope CurrentUser
 | `CA004-AllUsers-BlockOutsideEU` | All (excl. break-glass) | Locations: all except named location "EU" | Block | Report-only |
 | `CA005-AllUsers-RequireCompliantDevice` | All (excl. break-glass) | Office 365 | Require compliant device (Intune, [project 05](https://github.com/BigDougCed/05-intune-endpoint-management)) | Report-only |
 
-## ✅ Proof
+## Lab evidence
 - [ ] Users and licence group in the Entra admin center → `screenshots/users-licences.png`
 - [ ] Conditional Access policy list → `screenshots/ca-policies.png`
 - [ ] Sign-in log showing "Report-only: success/failure" for CA001 → `screenshots/ca-report-only.png`
@@ -60,7 +61,7 @@ Install-Module ExchangeOnlineManagement -Scope CurrentUser
 - [ ] Shared mailbox with member permissions → `screenshots/shared-mailbox.png`
 - [ ] Output of `Get-M365MfaReport.ps1` → `screenshots/mfa-report.png`
 
-## 🧪 Help desk scenarios practised
+## Help desk scenarios practised
 | Ticket | Resolution |
 |---|---|
 | "I got a new phone, the Authenticator doesn't work anymore" | Verify identity → Entra › User › Authentication methods → *Require re-register MFA* / delete old method → user re-registers at aka.ms/mysecurityinfo |
@@ -68,8 +69,9 @@ Install-Module ExchangeOnlineManagement -Scope CurrentUser
 | "I can't see the shared mailbox" | FullAccess permission + AutoMapping; replication delay up to 60 min; restart Outlook |
 | "Sign-in blocked" | Sign-in logs → *Conditional Access* tab shows which policy blocked and why |
 
-## 🧰 Skills shown
+## Skills shown
 Microsoft 365 admin center · Entra ID (users, groups, roles, sign-in logs) · group-based licensing · MFA & Conditional Access · Exchange Online · Microsoft Graph PowerShell · ExchangeOnlineManagement module
 
 ---
-← [03 PowerShell automation](https://github.com/BigDougCed/03-powershell-ad-automation) · [Portfolio](https://github.com/BigDougCed) · [05 Intune](https://github.com/BigDougCed/05-intune-endpoint-management) →
+
+<p align="center"><sub><a href="https://github.com/BigDougCed/03-powershell-ad-automation">03 PowerShell automation</a> &nbsp;·&nbsp; <a href="https://github.com/BigDougCed">Portfolio</a> &nbsp;·&nbsp; <a href="https://github.com/BigDougCed/05-intune-endpoint-management">05 Intune</a></sub></p>
